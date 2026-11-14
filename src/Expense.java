@@ -1,3 +1,4 @@
+// Stores one shared expense: who paid, the amount, and what it was for.
 public class Expense {
     private String payer;
     private double amount;
