@@ -11,16 +11,18 @@ public class Main {
         ArrayList<Expense> expenses = loadExpenses();
 	boolean isRunning = true;
         while (isRunning == true) {
-            String choice = IO.readln("1) Add  2) List  3) Quit: ");
+            String choice = IO.readln("1) Add  2) List  3) Balances  4) Quit: ");
             if (choice.equals("1")) {
                 addExpense(expenses);
 		saveExpenses(expenses);
             } else if (choice.equals("2")) {
                 printExpenses(expenses);
             } else if (choice.equals("3")) {
+                printBalances(expenses);
+            } else if (choice.equals("4")) {
                 isRunning = false;
-            } else {
-                IO.println("Invalid choice.");
+            } else {                
+		IO.println("Invalid choice.");
             }
         }
     }
@@ -38,6 +40,31 @@ public class Main {
         IO.println("=== All Expenses ===");
         for (int i = 0; i < expenses.size(); i++) {
             IO.println((i + 1) + ". " + expenses.get(i));
+        }
+    }
+
+    // Splits every expense evenly among the 4 roommates and prints who owes or is owed.
+    private static void printBalances(ArrayList<Expense> expenses) {
+        String[] names = {"Sang", "Brody", "Connor", "Sam"};
+        double[] balances = new double[4];
+        for (int i = 0; i < expenses.size(); i++) {
+            Expense expense = expenses.get(i);
+            double share = expense.getAmount() / 4;
+            for (int j = 0; j < 4; j++) {
+                if (names[j].equals(expense.getPayer())) {
+                    balances[j] += expense.getAmount() - share;
+                } else {
+                    balances[j] -= share;
+                }
+            }
+        }
+        IO.println("=== Balances ===");
+        for (int i = 0; i < 4; i++) {
+            if (balances[i] >= 0) {
+                IO.println(String.format("%s is owed $%.2f", names[i], balances[i]));
+            } else {
+                IO.println(String.format("%s owes $%.2f", names[i], -balances[i]));
+            }
         }
     }
 
