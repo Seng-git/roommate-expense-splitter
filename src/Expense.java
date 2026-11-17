@@ -26,4 +26,9 @@ public class Expense {
     public String toString() {
         return String.format("%s paid $%.2f for %s", this.payer, this.amount, this.description);
     }
+
+    // Formats the expense as one line of expenses.txt: payer,amount,description
+    public String toFileLine() {
+        return this.payer + "," + this.amount + "," + this.description;
+    }
 }

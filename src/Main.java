@@ -1,14 +1,20 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 // Runs the roommate expense splitter.
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Expense> expenses = new ArrayList<>();
+        ArrayList<Expense> expenses = loadExpenses();
 	boolean isRunning = true;
         while (isRunning == true) {
             String choice = IO.readln("1) Add  2) List  3) Quit: ");
             if (choice.equals("1")) {
                 addExpense(expenses);
+		saveExpenses(expenses);
             } else if (choice.equals("2")) {
                 printExpenses(expenses);
             } else if (choice.equals("3")) {
@@ -33,5 +39,34 @@ public class Main {
         for (int i = 0; i < expenses.size(); i++) {
             IO.println((i + 1) + ". " + expenses.get(i));
         }
+    }
+
+    // Rewrites expenses.txt with every expense in the list, one per line.
+    private static void saveExpenses(ArrayList<Expense> expenses) {
+        try (PrintWriter pw = new PrintWriter("expenses.txt")) {
+            for (int i = 0; i < expenses.size(); i++) {
+                pw.println(expenses.get(i).toFileLine());
+            }
+        } catch (IOException e) {
+            IO.println("Could not save to file");
+        }
+    }
+
+    // Reads expenses.txt into a list; starts empty if the file doesn't exist yet.
+    private static ArrayList<Expense> loadExpenses() {
+        ArrayList<Expense> expenses = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("expenses.txt"))) {
+            String line = br.readLine();
+            while (line != null) {
+                String[] expense = line.split(",", 3);
+                expenses.add(new Expense(expense[0], Double.parseDouble(expense[1]), expense[2]));
+                line = br.readLine();
+            }
+        } catch (FileNotFoundException e) {
+            IO.println("File not found");
+        } catch (IOException e) {
+            IO.println("Could not read file");
+        }
+        return expenses;
     }
 }
