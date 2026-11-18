@@ -30,7 +30,14 @@ public class Main {
     // Asks the user for one expense and adds it to the list.
     private static void addExpense(ArrayList<Expense> expenses) {
         String payer = IO.readln("Who paid? ");
-        double amount = Double.parseDouble(IO.readln("Amount: $"));
+        double amount = 0;
+        while (amount <= 0) {
+            try {
+                amount = Double.parseDouble(IO.readln("Amount (> 0): $"));
+            } catch (NumberFormatException e) {
+                IO.println("Not a number.");
+            }
+        }
         String description = IO.readln("Description: ");
         expenses.add(new Expense(payer, amount, description));
     }
@@ -86,7 +93,11 @@ public class Main {
             String line = br.readLine();
             while (line != null) {
                 String[] expense = line.split(",", 3);
-                expenses.add(new Expense(expense[0], Double.parseDouble(expense[1]), expense[2]));
+                try {
+                    expenses.add(new Expense(expense[0], Double.parseDouble(expense[1]), expense[2]));
+                } catch (Exception e) {
+                    IO.println("Skipped bad line: " + line);
+                }
                 line = br.readLine();
             }
         } catch (FileNotFoundException e) {
