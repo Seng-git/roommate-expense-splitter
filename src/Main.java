@@ -11,7 +11,7 @@ public class Main {
         ArrayList<Expense> expenses = loadExpenses();
 	boolean isRunning = true;
         while (isRunning == true) {
-            String choice = IO.readln("1) Add  2) List  3) Balances  4) Quit: ");
+            String choice = IO.readln("1) Add  2) List  3) Balances  4) Delete  5) Quit: ");
             if (choice.equals("1")) {
                 addExpense(expenses);
 		saveExpenses(expenses);
@@ -20,8 +20,11 @@ public class Main {
             } else if (choice.equals("3")) {
                 printBalances(expenses);
             } else if (choice.equals("4")) {
+                deleteExpense(expenses);
+                saveExpenses(expenses);
+            } else if (choice.equals("5")) {
                 isRunning = false;
-            } else {                
+            } else {               
 		IO.println("Invalid choice.");
             }
         }
@@ -72,6 +75,18 @@ public class Main {
             } else {
                 IO.println(String.format("%s owes $%.2f", names[i], -balances[i]));
             }
+        }
+    }
+
+    // Removes the expense the user picks by its number in the list.
+    private static void deleteExpense(ArrayList<Expense> expenses) {
+        printExpenses(expenses);
+        try {
+            int n = Integer.parseInt(IO.readln("Number to delete: "));
+            Expense removed = expenses.remove(n - 1);
+            IO.println("Deleted: " + removed);
+        } catch (Exception e) {
+            IO.println("Invalid number.");
         }
     }
 
